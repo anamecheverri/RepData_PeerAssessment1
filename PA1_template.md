@@ -1,25 +1,29 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 
 ## Loading and preprocessing the data
 This code reads the data with 3 columns: steps: integer, date:character, and interval: integer
-```{r}
+
+```r
 dat <-read.table("activity.csv",sep=",",header=TRUE,stringsAsFactors=FALSE)
 head(dat,1)
 ```
 
+```
+##   steps       date interval
+## 1    NA 2012-10-01        0
+```
+
 ## What is mean total number of steps taken per day?
 We first add all the steps per day and then plot a histogram to understand how the data is distributed per day. Then the mean and median are calculated.
-```{r}
+
+```r
 stepsperday <-aggregate(dat$steps~dat$date,FUN=sum)
 colnames(stepsperday)<-c("date","steps")
 hist(stepsperday$steps,main="Steps Histogram",col="red",xlab="Total Daily Steps")
 ```
+
+![](./PA1_template_files/figure-html/unnamed-chunk-2-1.png) 
 
 
 
@@ -27,47 +31,74 @@ hist(stepsperday$steps,main="Steps Histogram",col="red",xlab="Total Daily Steps"
 
 
 ### The mean steps per day is:
-```{r}
+
+```r
 mean(stepsperday$steps)
 ```
+
+```
+## [1] 10766.19
+```
 ###The median steps per day is:
-```{r}
+
+```r
 median(stepsperday$steps)
+```
+
+```
+## [1] 10765
 ```
 Mean and Median are very close numbers.  
 
 ## What is the average daily activity pattern?
 We now calculate the average steps per interval and plot the data to show average daily activity patterns per interval.
 
-```{r}
+
+```r
 stepsperinterval <-aggregate(dat$steps~dat$interval,FUN=mean)
 colnames(stepsperinterval)<-c("interval","steps")
 plot(stepsperinterval$interval,type='l',stepsperinterval$steps,col="red",ylab="Average Steps",xlab="Interval",main="Average Steps per Interval")
 ```
 
+![](./PA1_template_files/figure-html/unnamed-chunk-5-1.png) 
+
 
 
 
 ###The Interval with a maximum # of steps is:
-```{r}
+
+```r
 stepsperinterval[max(stepsperinterval$steps)==stepsperinterval$steps,]
+```
+
+```
+##     interval    steps
+## 104      835 206.1698
 ```
 ## Imputing missing values
 ###The number of rows with missing values is
-```{r}
+
+```r
 nrow(dat[dat$steps=="NA",])
+```
+
+```
+## [1] 2304
 ```
 ###Strategy to replace missing values 
 We will now replace every occurrence of NA with the mean of steps per interval.  (If an observation has NA as the number of steps, we take the average of steps at that interval, and replace the NA with that value).
 
 We will look at the histogram and mean and median for the new data with imputed values
-```{r}
+
+```r
 newdat<-merge(dat,stepsperinterval,by.x="interval",by.y="interval",all=FALSE)
 newdat$steps.x<-ifelse(is.na(newdat$steps.x),newdat$steps.y,newdat$steps.x)
 newstepsperday <-aggregate(newdat$steps.x~newdat$date,FUN=sum)
 colnames(newstepsperday)<-c("date","steps")
 hist(newstepsperday$steps,main="Steps Histogram",col="red",xlab="Total Daily Steps")
 ```
+
+![](./PA1_template_files/figure-html/unnamed-chunk-8-1.png) 
 
 
 
@@ -78,17 +109,28 @@ hist(newstepsperday$steps,main="Steps Histogram",col="red",xlab="Total Daily Ste
 The histogram shows that there is now a higher number of observations close to the mean and median
 
 ### The mean steps per day is:
-```{r}
+
+```r
 mean(newstepsperday$steps)
 ```
+
+```
+## [1] 10766.19
+```
 ###The median steps per day is:
-```{r}
+
+```r
 median(newstepsperday$steps)
+```
+
+```
+## [1] 10766.19
 ```
 There are not major differences in mean and median once the missing values are replaced by the mean per interval. The mean changes slightly as that was the value that was imputed for missing values.
 
 ## Are there differences in activity patterns between weekdays and weekends?
-```{r}
+
+```r
 newdat$dattype<-ifelse(weekdays(as.Date(newdat$date))=="Saturday"|weekdays(as.Date(newdat$date))=="Sunday","Weekend","Weekday")
 
 datweekday<-newdat[newdat$dattype=="Weekday",]
@@ -105,6 +147,8 @@ plot(weekendperinterval$interval,type='l',weekendperinterval$steps,col="red",yla
 
 plot(weekdayperinterval$interval,type='l',weekdayperinterval$steps,col="red",ylab="Average Steps",xlab="Interval",main="Weekdays")
 ```
+
+![](./PA1_template_files/figure-html/unnamed-chunk-11-1.png) 
 
 
 
