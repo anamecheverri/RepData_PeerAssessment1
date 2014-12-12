@@ -14,7 +14,8 @@ head(dat,1)
 ```
 
 ## What is mean total number of steps taken per day?
-We first add all the steps per day and then plot a histogram to understand how the data is distributed per day. Then the mean and median are calculated.
+We first add all the steps per day and then plot a histogram to understand how the data is 
+distributed per day. Then the mean and median are calculated.
 ```{r}
 stepsperday <-aggregate(dat$steps~dat$date,FUN=sum)
 colnames(stepsperday)<-c("date","steps")
@@ -89,7 +90,8 @@ There are not major differences in mean and median once the missing values are r
 
 ## Are there differences in activity patterns between weekdays and weekends?
 ```{r}
-newdat$dattype<-ifelse(weekdays(as.Date(newdat$date))=="Saturday"|weekdays(as.Date(newdat$date))=="Sunday","Weekend","Weekday")
+newdat$dattype<-ifelse(weekdays(as.Date(newdat$date))=="Saturday"
+                |weekdays(as.Date(newdat$date))=="Sunday","Weekend","Weekday")
 
 datweekday<-newdat[newdat$dattype=="Weekday",]
 datweekend<-newdat[newdat$dattype=="Weekend",]
@@ -101,9 +103,11 @@ weekendperinterval <-aggregate(datweekend$steps.x~datweekend$interval,FUN=mean)
 colnames(weekendperinterval)<-c("interval","steps")
 
 par(mfrow=c(2,1),pin=c(5,1.5))
-plot(weekendperinterval$interval,type='l',weekendperinterval$steps,col="red",ylab="Average Steps",xlab="Interval",main="Weekends")
+plot(weekendperinterval$interval,type='l',weekendperinterval$steps,col="red",
+     ylab="Average Steps",xlab="Interval",main="Weekends")
 
-plot(weekdayperinterval$interval,type='l',weekdayperinterval$steps,col="red",ylab="Average Steps",xlab="Interval",main="Weekdays")
+plot(weekdayperinterval$interval,type='l',weekdayperinterval$steps,col="red",
+     ylab="Average Steps",xlab="Interval",main="Weekdays")
 ```
 
 
